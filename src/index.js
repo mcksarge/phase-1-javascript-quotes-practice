@@ -7,8 +7,10 @@ document.addEventListener('DOMContentLoaded', () => { //DOM is loaded
     fetch("http://localhost:3000/quotes?_embed=likes")
     .then(resp => resp.json())
     .then(quotes => {
+
         quotes.forEach(quote => {
             let li = document.createElement('li');
+            let numLikes = 0
             li.classList.add('quote-card');
             li.innerHTML = `
                 <blockquote class="blockquote">
@@ -19,13 +21,15 @@ document.addEventListener('DOMContentLoaded', () => { //DOM is loaded
                     <button class='btn-danger'>Delete</button>
                 </blockquote>
             `
+         
             
             
             //Like Button
             let likeBtn = li.querySelector('.btn-success')
             likeBtn.addEventListener('click', (e) => {
-                console.log('You clicked like!')
-    
+                numLikes += 1
+                li.querySelector('.btn-success').textContent = `Likes: ${numLikes}`
+                updateLikes(e)
             });
 
             //Delete Button
@@ -108,7 +112,15 @@ function sendQuote(quote){
 }
 
 
-function updateLikes(quote){
-    fetch
-}
+function updateLikes(quote) {
+    fetch(`http://localhost:3000/likes/${likes.id}`, {
+      method: 'PATCH',
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(quote)
+    })
+    .then(response => response.json())
+    .then(quote => console.log(quote))
+  }
 
